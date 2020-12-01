@@ -10,6 +10,7 @@ const IngredientForm = React.memo(props => {
   //split multiple state -> best practice
   const [enteredTitle, setEnteredTitle] = useState('');
   const [enteredAmount, setEnteredAmount] = useState('');
+  console.log('RENDERING <IngredientForm /> (using React.memo)');
   
   const submitHandler = event => {
     event.preventDefault();

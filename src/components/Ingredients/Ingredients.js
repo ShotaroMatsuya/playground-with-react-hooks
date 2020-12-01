@@ -1,4 +1,4 @@
-import React,{ useReducer, useState,useEffect,useCallback } from 'react';
+import React,{ useReducer,useEffect,useCallback,useMemo } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -74,7 +74,9 @@ const Ingredients = () => {
   },[]);//useCallbackにより関数がcacheされてre-createされないのでinfiniteLoopを防ぐことができる
 
 
-  const addIngredientHandler = ingredient =>{ //ingredientはobject(amount , title)
+  // useCallbackで最初の一回のみbuildされる
+  const addIngredientHandler = useCallback(ingredient =>{ 
+    //ingredientはobject(amount , title)
     dispatchHttp({type:'SEND'});
     fetch(URL + '/ingredients.json',{
       method:'POST',
@@ -90,8 +92,8 @@ const Ingredients = () => {
       // ]);
       dispatch({type:"ADD",ingredient:{id:responseData.name,...ingredient } })
     });
-  };
-  const removeIngredientHandler = ingredientId => {
+  },[]);
+  const removeIngredientHandler = useCallback(ingredientId => {
     dispatchHttp({type:'SEND'});
     fetch(URL + `/ingredients/${ingredientId}.json`,{
       method:'DELETE'
@@ -107,10 +109,19 @@ const Ingredients = () => {
       //ただし、更新されたstateはrenderingがされたあとでのみ使用できるという点に注意
       dispatchHttp({type:'ERROR',errorMessage:'Something went wrong!'});
     });
-  };
-  const clearError = () =>{
+  },[]);
+  const clearError = useCallback(() =>{
     dispatchHttp({type:'CLEAR'});
-  };
+  },[]);
+
+  const ingredientList = useMemo(()=>{//useMemoはvalueをsaveし、useCallbackはfunctionをsaveする
+    return (
+      <IngredientList 
+          ingredients={userIngredients} 
+          onRemoveItem={removeIngredientHandler} />
+    );
+  },[userIngredients,removeIngredientHandler]);
+
   return (
     <div className="App">
       {httpState.error && <ErrorModal onClose={clearError}>{httpState.error}</ErrorModal>}
@@ -120,9 +131,7 @@ const Ingredients = () => {
 
       <section>
         <Search onLoadIngredients={filteredIngredientsHandler} />
-        <IngredientList 
-          ingredients={userIngredients} 
-          onRemoveItem={removeIngredientHandler} />
+        {ingredientList}
       </section>
     </div>
   );
