@@ -1,7 +1,7 @@
-import React,{ useContext } from 'react';
+import React, { useContext } from 'react';
 
 import Card from './UI/Card';
-import { AuthContext } from '../context/auth-context';//context object
+import { AuthContext } from '../context/auth-context'; //context object
 import './Auth.css';
 
 const Auth = props => {
@@ -14,8 +14,8 @@ const Auth = props => {
   return (
     <div className="auth">
       <Card>
-        <h2>You are not authenticated!</h2>
-        <p>Please log in to continue.</p>
+        <h2>未認証です</h2>
+        <p>以下のボタンを押してログイン！</p>
         <button onClick={loginHandler}>Log In</button>
       </Card>
     </div>

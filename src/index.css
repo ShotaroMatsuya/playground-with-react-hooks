@@ -20,6 +20,16 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+button:disabled {
+  background: #9d9a9b;
+  color: black;
+  border-color: #9d9a9b;
+}
+button.resetBtn {
+  background: #205fff;
+  color: white;
+  border: 1px solid #205fff;
+}
 
 button:hover,
 button:active {
